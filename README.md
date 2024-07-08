@@ -8,3 +8,9 @@
 6) Финальная доработка (к примеру, вынести какие-нибудь параметры в настройки) - 3 часа
 
 19-25 часов + 30% (запас) => 25-33 часа
+
+## Генерация exe-файла
+
+```shell
+pyinstaller --noconfirm --onefile --windowed --name "Path on graph" --distpath output/executable/ --specpath output/specification/ --workpath output/build/ main.py
+```

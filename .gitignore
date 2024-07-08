@@ -1,4 +1,7 @@
 .idea/
 venv/
+
 task.docx
 TIME.md
+
+output/
