@@ -1,5 +1,6 @@
-from PyQt6.QtWidgets import QMainWindow
+from PySide6.QtWidgets import QMainWindow
 
+from core.graph.graph import Graph
 from core.settings import Settings
 from core.ui.menu_bar import MenuBar
 
@@ -15,3 +16,6 @@ class MainWindow(QMainWindow):
 
         self.menu = MenuBar(self)
         self.setMenuBar(self.menu)
+
+        self.graph = Graph(self)
+        self.setCentralWidget(self.graph)

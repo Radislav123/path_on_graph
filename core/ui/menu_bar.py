@@ -1,7 +1,5 @@
-import sys
-
-from PyQt6.QtGui import QAction
-from PyQt6.QtWidgets import QMenu, QMenuBar, QWidget
+from PySide6.QtGui import QAction
+from PySide6.QtWidgets import QApplication, QMenu, QMenuBar, QWidget
 
 
 class ExitAction(QAction):
@@ -13,7 +11,7 @@ class ExitAction(QAction):
 
     @staticmethod
     def on_click() -> None:
-        sys.exit(0)
+        QApplication.closeAllWindows()
 
 
 class FileMenu(QMenu):
@@ -31,7 +29,7 @@ class FileMenu(QMenu):
 
 class MenuBar(QMenuBar):
     def __init__(self, parent: QWidget) -> None:
-        super().__init__()
+        super().__init__(parent)
 
         self.file = FileMenu(self)
         self.addMenu(self.file)
