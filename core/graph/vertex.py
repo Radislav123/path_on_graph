@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QPoint
 from PySide6.QtGui import QMouseEvent
@@ -6,6 +7,10 @@ from PySide6.QtWidgets import QPushButton, QWidget
 
 from core.service.positioning import round_point
 from core.settings import Settings
+
+
+if TYPE_CHECKING:
+    from core.graph.graph import Graph
 
 
 class Mode(Enum):
@@ -22,6 +27,7 @@ class Vertex(QPushButton):
         self.index = self.__class__.amount
         self.__class__.amount += 1
         super().__init__(str(self.index), parent)
+        self.graph: Graph = self.parent()
         self.mode = Mode.NOT_INTERACTIVE
 
         self.radius = 15
@@ -49,12 +55,16 @@ class Vertex(QPushButton):
         return QPoint(self.x() - self.width() // 2, self.y() - self.height() // 2)
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
-        super().mousePressEvent(event)
-        self.mode = Mode.MOVING
+        if self.graph.mode == self.graph.mode.VERTEX_MOVING:
+            super().mousePressEvent(event)
+            self.mode = Mode.MOVING
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
-        super().mouseReleaseEvent(event)
-        self.mode = Mode.NOT_INTERACTIVE
+        if self.graph.mode == self.graph.mode.VERTEX_MOVING:
+            super().mouseReleaseEvent(event)
+            self.mode = Mode.NOT_INTERACTIVE
+        elif self.graph.mode == self.graph.mode.VERTEX_DELETION:
+            self.graph.delete_vertex(self)
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         super().mouseMoveEvent(event)
