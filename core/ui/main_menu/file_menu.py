@@ -1,5 +1,5 @@
 from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QApplication, QMenu, QMenuBar, QWidget
+from PySide6.QtWidgets import QApplication, QMenu, QWidget
 
 
 class ExitAction(QAction):
@@ -18,18 +18,8 @@ class FileMenu(QMenu):
     def __init__(self, parent: QWidget) -> None:
         super().__init__("Файл", parent)
 
-        self.addActions(
-            [
-                QAction("Загрузить граф", self),
-                QAction("Сохранить граф", self),
-                ExitAction(self)
-            ]
-        )
+        self.addAction(QAction("Загрузить граф", self))
+        self.addAction(QAction("Сохранить граф", self))
+        self.addSeparator()
 
-
-class MenuBar(QMenuBar):
-    def __init__(self, parent: QWidget) -> None:
-        super().__init__(parent)
-
-        self.file = FileMenu(self)
-        self.addMenu(self.file)
+        self.addAction(ExitAction(self))

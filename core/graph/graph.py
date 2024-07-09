@@ -10,7 +10,18 @@ from core.graph.vertex import Vertex
 class Mode(Enum):
     NOT_INTERACTIVE = 0
     VERTEX_PLACEMENT = 1
-    EDGE_PLACEMENT = 2
+    VERTEX_DELETION = 2
+    EDGE_PLACEMENT = 3
+    EDGE_DELETION = 4
+
+
+mode_titles = {
+    Mode.NOT_INTERACTIVE: "неинтерактивный",
+    Mode.VERTEX_PLACEMENT: "добавление вершин",
+    Mode.VERTEX_DELETION: "удаление вершин",
+    Mode.EDGE_PLACEMENT: "добавление ребер",
+    Mode.EDGE_DELETION: "удаление ребер",
+}
 
 
 # можно поменять предка на QLabel и заменить цвет фона строкой ниже, чтобы проверить, что виджет на месте
@@ -19,9 +30,10 @@ class Graph(QWidget):
     def __init__(self, parent: QWidget) -> None:
         super().__init__(parent)
         self.vertices: list[Vertex] = []
-        self.mode = Mode.NOT_INTERACTIVE
-        # todo: remove line
-        self.mode = Mode.VERTEX_PLACEMENT
+        self.mode: Mode | None = None
+
+    def set_mode(self, mode: Mode) -> None:
+        self.mode = mode
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if self.mode == Mode.VERTEX_PLACEMENT:

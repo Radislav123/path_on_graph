@@ -2,7 +2,8 @@ from PySide6.QtWidgets import QMainWindow
 
 from core.graph.graph import Graph
 from core.settings import Settings
-from core.ui.menu_bar import MenuBar
+from core.ui.graph_tools.toolbar import Toolbar
+from core.ui.main_menu.menu_bar import MenuBar
 
 
 class MainWindow(QMainWindow):
@@ -14,8 +15,12 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(self.settings.PRETTY_APP_NAME())
         self.resize(400, 300)
 
+        self.graph = Graph(self)
+
         self.menu = MenuBar(self)
         self.setMenuBar(self.menu)
 
-        self.graph = Graph(self)
+        self.toolbar = Toolbar(self)
+        self.addToolBar(self.toolbar)
+
         self.setCentralWidget(self.graph)
