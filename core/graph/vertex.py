@@ -10,6 +10,7 @@ from core.settings import Settings
 
 
 if TYPE_CHECKING:
+    from core.graph.edge import Edge
     from core.graph.graph import Graph
 
 
@@ -26,6 +27,8 @@ class Vertex(QPushButton):
     def __init__(self, position: QPoint, parent: QWidget) -> None:
         self.index = self.__class__.amount
         self.__class__.amount += 1
+        self.edges: set["Edge"] = set()
+
         super().__init__(str(self.index), parent)
         self.graph: Graph = self.parent()
         self.mode = Mode.NOT_INTERACTIVE
@@ -50,24 +53,40 @@ class Vertex(QPushButton):
         self.setStyleSheet(self.stylesheet)
         self.show()
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.index})"
+
     @property
     def center(self) -> QPoint:
         return QPoint(self.x() - self.width() // 2, self.y() - self.height() // 2)
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
+        super().mousePressEvent(event)
         if self.graph.mode == self.graph.mode.VERTEX_MOVING:
-            super().mousePressEvent(event)
             self.mode = Mode.MOVING
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
+        super().mouseReleaseEvent(event)
         if self.graph.mode == self.graph.mode.VERTEX_MOVING:
-            super().mouseReleaseEvent(event)
             self.mode = Mode.NOT_INTERACTIVE
         elif self.graph.mode == self.graph.mode.VERTEX_DELETION:
             self.graph.delete_vertex(self)
+        elif self.graph.mode == self.graph.mode.EDGE_ADDING:
+            if self in self.graph.selected_vertices:
+                self.deselect()
+            else:
+                self.select()
+                self.graph.check_edge_creation()
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         super().mouseMoveEvent(event)
         if self.mode == Mode.MOVING:
             new_pos = self.center + round_point(event.localPos())
             self.move(new_pos)
+
+    # todo: менять цвет, чтобы было понятно, что вершина выбрана
+    def select(self) -> None:
+        self.graph.selected_vertices.add(self)
+
+    def deselect(self) -> None:
+        self.graph.selected_vertices.remove(self)

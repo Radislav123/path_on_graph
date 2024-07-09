@@ -1,3 +1,5 @@
+from PySide6.QtCore import QSize
+from PySide6.QtGui import QResizeEvent
 from PySide6.QtWidgets import QMainWindow
 
 from core.graph.graph import Graph
@@ -13,7 +15,6 @@ class MainWindow(QMainWindow):
         self.settings = Settings()
 
         self.setWindowTitle(self.settings.PRETTY_APP_NAME())
-        self.resize(400, 300)
 
         self.graph = Graph(self)
 
@@ -24,3 +25,12 @@ class MainWindow(QMainWindow):
         self.addToolBar(self.toolbar)
 
         self.setCentralWidget(self.graph)
+        self.resize(QSize(400, 300))
+
+    def resizeEvent(self, event: QResizeEvent)-> None:
+        super().resizeEvent(event)
+        self.graph.resizeEvent(event)
+
+    def resize(self, size: QSize) -> None:
+        super().resize(size)
+        self.graph.resize(size)
