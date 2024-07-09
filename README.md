@@ -12,5 +12,5 @@
 ## Генерация exe-файла
 
 ```shell
-pyinstaller --noconfirm --onefile --windowed --name "Path on graph" --distpath output/executable/ --specpath output/specification/ --workpath output/build/ main.py
+pyinstaller --noconfirm --windowed --onefile --name "Path on graph" --add-data "../../resources/;resources/"  --distpath output/executable/ --specpath output/specification/ --workpath output/build/ main.py
 ```
