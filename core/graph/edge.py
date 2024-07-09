@@ -2,8 +2,7 @@ import math
 from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QPoint
-from PySide6.QtGui import QMouseEvent
-from PySide6.QtWidgets import QGraphicsProxyWidget, QPushButton
+from PySide6.QtWidgets import QGraphicsProxyWidget, QGraphicsSceneMouseEvent, QPushButton
 
 from core.graph.vertex import Vertex
 from core.settings import Settings
@@ -23,13 +22,15 @@ class EdgeButton(QPushButton):
         self.graph = self.proxy.graph
         self.setText(str(self.proxy.index))
 
+        if self.__class__.stylesheet is None:
+            with open(f"{self.settings.STYLESHEET_FOLDER}/edge.css", 'r') as file:
+                stylesheet = file.read()
+                self.__class__.stylesheet = stylesheet
+
+        self.setStyleSheet(self.stylesheet)
+
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}{self.proxy.vertex_0, self.proxy.vertex_1}"
-
-    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
-        super().mouseReleaseEvent(event)
-        if self.graph.mode == self.graph.mode.EDGE_DELETION:
-            self.graph.delete_edge(self.proxy)
 
 
 class Edge(QGraphicsProxyWidget):
@@ -88,3 +89,8 @@ class Edge(QGraphicsProxyWidget):
             offset_x = self.height / 2
         offset = QPoint(self.vertex_0.radius + 4 + offset_x, 3)
         self.setPos(self.vertex_0.center + offset)
+
+    def mouseReleaseEvent(self, event: QGraphicsSceneMouseEvent) -> None:
+        super().mouseReleaseEvent(event)
+        if self.graph.mode == self.graph.mode.EDGE_DELETION:
+            self.graph.delete_edge(self)

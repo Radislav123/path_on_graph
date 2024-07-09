@@ -1,3 +1,4 @@
+import copy
 from enum import Enum
 
 from PySide6.QtCore import QPoint, QSize
@@ -27,6 +28,10 @@ mode_titles = {
 }
 
 
+class Scene(QGraphicsScene):
+    pass
+
+
 class Graph(QGraphicsView):
     def __init__(self, parent: QWidget) -> None:
         super().__init__(parent)
@@ -35,7 +40,7 @@ class Graph(QGraphicsView):
         self.edges: set[Edge] = set()
         self.mode: Mode | None = None
 
-        self.scene = QGraphicsScene(self)
+        self.scene = Scene(self)
         self.setScene(self.scene)
 
     def set_mode(self, mode: Mode) -> None:
@@ -52,9 +57,8 @@ class Graph(QGraphicsView):
         self.vertices.remove(vertex)
         vertex.setParent(None)
 
-        for edge in vertex.edges:
-            edge.vertex_0.edges.remove(edge)
-            edge.vertex_1.edges.remove(edge)
+        for edge in copy.copy(vertex.edges):
+            self.delete_edge(edge)
 
     def add_edge(self, vertex_0: Vertex, vertex_1: Vertex) -> None:
         vertices = {vertex_0, vertex_1}
@@ -69,6 +73,7 @@ class Graph(QGraphicsView):
             vertex_1.edges.add(edge)
 
     def delete_edge(self, edge: Edge) -> None:
+        self.scene.removeItem(edge)
         self.edges.remove(edge)
         edge.vertex_0.edges.remove(edge)
         edge.vertex_1.edges.remove(edge)
