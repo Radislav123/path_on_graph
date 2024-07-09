@@ -25,9 +25,9 @@ class MainWindow(QMainWindow):
         self.addToolBar(self.toolbar)
 
         self.setCentralWidget(self.graph)
-        self.resize(QSize(400, 300))
+        self.resize(QSize(900, 600))
 
-    def resizeEvent(self, event: QResizeEvent)-> None:
+    def resizeEvent(self, event: QResizeEvent) -> None:
         super().resizeEvent(event)
         self.graph.resizeEvent(event)
 
