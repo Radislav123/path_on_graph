@@ -1,6 +1,7 @@
 import math
 from typing import TYPE_CHECKING
 
+from PySide6.QtCore import QPoint
 from PySide6.QtGui import QMouseEvent
 from PySide6.QtWidgets import QGraphicsProxyWidget, QPushButton
 
@@ -48,7 +49,11 @@ class Edge(QGraphicsProxyWidget):
         self.setWidget(self.button)
         self.graph.scene.addItem(self)
 
+        self.setMinimumSize(0, 0)
         self.angle = 0.0
+        self.vector = QPoint()
+        self.width = 0
+        self.height = 5
         self.update_position()
 
         self.show()
@@ -64,6 +69,8 @@ class Edge(QGraphicsProxyWidget):
         if angle < 0:
             angle += 360
 
+        self.vector = vector
+        self.width = magnitude
         self.angle = angle
 
     def update_position(self) -> None:
@@ -72,5 +79,12 @@ class Edge(QGraphicsProxyWidget):
             self.vertex_0, self.vertex_1 = self.vertex_1, self.vertex_0
             self.update_angle()
 
+        self.resize(self.width, self.height)
         self.setRotation(self.angle)
-        self.setPos(self.vertex_0.pos())
+
+        if self.angle > 180:
+            offset_x = -self.height / 2
+        else:
+            offset_x = self.height / 2
+        offset = QPoint(self.vertex_0.radius + 4 + offset_x, 3)
+        self.setPos(self.vertex_0.center + offset)

@@ -83,6 +83,8 @@ class Vertex(QPushButton):
         if self.mode == Mode.MOVING:
             new_pos = self.center + round_point(event.localPos())
             self.move(new_pos)
+            for edge in self.edges:
+                edge.update_position()
 
     # todo: менять цвет, чтобы было понятно, что вершина выбрана
     def select(self) -> None:
